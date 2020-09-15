@@ -1,0 +1,145 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+<!-- Font Awesome -->
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<!-- Moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"
+        integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+
+<!-- Tempus Dominus Bootstrap 4 -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css"
+      integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"
+        integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+{% extends 'base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <form action="{% url 'registration' %}" method="post" autocomplete="off">
+        {% comment %}<div style="color: red">{{ form.errors }}</div>{% endcomment %}
+        <div class="col" style="margin: 15px auto; width: 800px">
+            {% csrf_token %}
+            {{ form.non_field.errors }}
+            <div class="form-group">
+                <div class="row" style="width: 800px">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.login.id_for_label }}">{{ form.login.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.login }}</div>
+                    <div style="color: red">
+                        {{ form.login.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.password }}</div>
+                    <div style="color: red">
+                        {{ form.password.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.password2 }} </div>
+                    <div style="color: red">
+                        {{ form.password2.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.email.id_for_label }}">{{ form.email.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.email }}</div>
+                    <div style="color: red">
+                        {{ form.email.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.name }}</div>
+                    <div style="color: red">
+                        {{ form.name.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                        <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.lastname.id_for_label }}">{{ form.lastname.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.lastname }}</div>
+                    <div style="color: red">
+                        {{ form.lastname.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.age.id_for_label }}">{{ form.age.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">
+                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                            {{ form.age }}
+                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                        <script>
+                            $(function () {
+                                $("#datetimepicker1").datetimepicker({
+                                    format: 'DD.MM.YYYY',
+                                });
+                            });
+                        </script>
+                    </div>
+                    <div style="color: red">
+                        {{ form.age.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-1-4" style="width: 160px"><label
+                            for="{{ form.photo.id_for_label }}">{{ form.photo.label }}:</label></div>
+                    <div class="col-1-4" style="width: 240px">{{ form.photo }}</div>
+                    <div style="color: red">
+                        {{ form.photo.errors }}
+                    </div>
+                </div>
+            </div>
+            {% comment %}
+            {{ form.as_p }}
+            {% endcomment %}
+        </div>
+        <div class="row">
+            <div class="col-1-4" style="width: 160px"></div>
+            <div class="col-1-4" style="width: 240px; margin-left:15px; margin-bottom: 20px">
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block user %}
+{% endblock %}

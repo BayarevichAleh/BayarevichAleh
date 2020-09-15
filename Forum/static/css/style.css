@@ -1,0 +1,35 @@
+.container {
+    width: 100%;
+    max-width: 1024px; /*максимальная ширина может иметь другое значение*/
+    padding: 0px;
+    margin: 0 auto;
+    background-color: lightgrey;
+}
+
+.container:after, .row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.col-3-4 {
+    width: 73%;
+    float: left;
+    margin: 1%;
+
+}
+
+.col-1-4 {
+    width: 25%;
+    float: left;
+}
+
+.row {
+    margin: 0px auto;
+    padding: 0 0px;
+}
+
+body {
+    background-color: gray;
+}
+
