@@ -1,0 +1,27 @@
+{% if request.user.is_authenticated %}
+    {% if request.user.photo %}
+        <img src="../static{{ request.user.photo.url }}" alt="Photo" width="100%">
+    {% else %}
+        <img src="../static/media/userphotos/nophoto.png" alt="Photo" width="100%">
+    {% endif %}
+    <h4 align="center">{{ request.user.username }}</h4>
+    <a href="#">Мои форумы</a><br>
+    <a href="#">Мои сообщения</a><br>
+    <a href="#">Мои файлы</a><br>
+    <a href="#">Мой профиль</a><br>
+    <form action="{% url 'logout' %}" method="post" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" value={{ request.path }}
+                name='url'>
+        <div style="float: right">
+            <button type="submit" class="btn btn-primary">Выйти</button>
+        </div>
+    </form>
+{% else %}
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        {{ userform.as_p }}
+        <button type="submit" class="btn btn-primary">Войти</button>
+        <a href="{% url 'registration' %}" class="btn btn-primary">Регистрация</a>
+    </form>
+{% endif %}

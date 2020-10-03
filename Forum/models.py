@@ -1,46 +1,85 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import AbstractBaseUser,AbstractUser
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import UserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password
+
 
 
 # Create your models here.
-
-
-class User(models.Model):
-    """
-    Модель хранения данных пользователей
-    """
-    group_choices = (
-        ('admin', 'Администратор'),
-        ('user', 'Пользователь'),
-    )
+class Users(AbstractUser):
+    # group_choices = (
+    #     ('admin', 'Администратор'),
+    #     ('user', 'Пользователь'),
+    # )
     status_choices = (
         ('active', 'Активен'),
         ('warn', 'Вынесено предупреждение'),
         ('block', 'Заблокирован'),
         ('delate', 'Удален'),
     )
-    group = models.CharField(max_length=150, choices=group_choices, default='user', verbose_name='Группа')
-    login = models.CharField(max_length=50, verbose_name='Логин', unique=True)  # Логин юзера
-    password = models.CharField(max_length=100, verbose_name='Пароль')  # Его пароль
-    email = models.EmailField(max_length=50, verbose_name='E-mail')  # E-mail юзера
-    name = models.CharField(max_length=50, verbose_name='Имя')  # Имя юзера
-    lastname = models.CharField(blank=True, max_length=100, verbose_name='Фамиллия')  # Фамилия юзера (не обязательное)
-    age = models.DateField(blank=True, verbose_name='Дата Рождения')  # Возраст юзера
+    age = models.DateField(blank=True, null=True, verbose_name='Дата Рождения', )  # Возраст юзера
     photo = models.ImageField(blank=True, upload_to='userphotos/', verbose_name='Фото')  # Фото юзера
-    registration_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации')  # Дата регистрации
     status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
 
     def __str__(self):
-        return self.login
-
-    # def get_absolute_url(self):
-    #     return reverse('index')
+        return self.username
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        ordering = ['login']
+        ordering = ['username']
 
+
+# class User(AbstractBaseUser):
+#     """
+#     Модель хранения данных пользователей
+#     """
+#     username_validator = UnicodeUsernameValidator()
+#     group_choices = (
+#         ('admin', 'Администратор'),
+#         ('user', 'Пользователь'),
+#     )
+#     status_choices = (
+#         ('active', 'Активен'),
+#         ('warn', 'Вынесено предупреждение'),
+#         ('block', 'Заблокирован'),
+#         ('delate', 'Удален'),
+#     )
+#     group = models.CharField(max_length=150, choices=group_choices, default='user', verbose_name='Группа')
+#     username = models.CharField(
+#         _('username'),
+#         max_length=150,
+#         unique=True,
+#         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+#         validators=[username_validator],
+#         error_messages={
+#             'unique': _("A user with that username already exists."),
+#         },
+#     )  # Логин юзера
+#     # password = models.CharField(max_length=100, verbose_name='Пароль')  # Его пароль
+#     email = models.EmailField(max_length=50, verbose_name='E-mail')  # E-mail юзера
+#     first_name = models.CharField(max_length=50, verbose_name='Имя')  # Имя юзера
+#     last_name = models.CharField(blank=True, max_length=100, verbose_name='Фамилия')  # Фамилия юзера (не обязательное)
+#     age = models.DateField(blank=True, verbose_name='Дата Рождения')  # Возраст юзера
+#     photo = models.ImageField(blank=True, upload_to='userphotos/', verbose_name='Фото')  # Фото юзера
+#     registration_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации')  # Дата регистрации
+#     status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
+#
+#     USERNAME_FIELD = 'username'
+#     objects = UserManager()
+#
+#     def __str__(self):
+#         return self.username
+#
+#
+#     class Meta:
+#         verbose_name = 'Пользователь'
+#         verbose_name_plural = 'Пользователи'
+#         ordering = ['username']
 
 
 class Category(models.Model):
@@ -71,7 +110,7 @@ class Forum(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')  # Название форума
     commit = models.TextField(verbose_name='Описание')  # Краткое описание форума
     logo = models.ImageField(blank=True, upload_to='forumlogos/', verbose_name='Логотип')  # логотип форума
-    creator = models.ForeignKey('User', on_delete=models.PROTECT, null=True, verbose_name='Создатель')  # id создателя
+    creator = models.ForeignKey('Users', on_delete=models.PROTECT, null=True, verbose_name='Создатель')  # id создателя
     # id_admin = models.IntegerField(blank=True, verbose_name='')  # id администраторов
     # id_moderator = models.IntegerField(blank=True)  # id модераторов
     # id_user = models.IntegerField(blank=True)  # id пользователей для которых открыт форум
@@ -97,7 +136,7 @@ class Message(models.Model):
     """
     id_forum = models.ForeignKey('Forum', on_delete=models.CASCADE, null=True,
                                  verbose_name='Форум')  # id форума к которому пренадлежит сообщение
-    id_user = models.ForeignKey('User', on_delete=models.PROTECT, null=True,
+    id_user = models.ForeignKey('Users', on_delete=models.PROTECT, null=True,
                                 verbose_name='Пользователь')  # id юзера создавшего сообщение
     text = models.TextField()  # Содержание сообщения
     create_date = models.DateTimeField(auto_now_add=True)  # Дата создания сообщения

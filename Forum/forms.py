@@ -1,35 +1,46 @@
 from django import forms
 from .models import *
 from django.template.base import TemplateSyntaxError
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+# from django.contrib.auth.models import User
+from django.contrib.auth import (
+    authenticate, get_user_model, password_validation,
+)
+from django.core.exceptions import ValidationError
 
 
-class RegForm(forms.ModelForm):
+
+class RegForm(UserCreationForm):
+    password1 = forms.CharField(label='Пароль', max_length=100,
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Повтор пароля', max_length=100,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        model = User
-        fields = ['login', 'password', 'email', 'name', 'lastname', 'age', 'photo']
+        model = Users
+        fields = ['username', 'email', 'first_name', 'last_name', 'age', 'photo']
         widgets = {
-            'login': forms.TextInput(attrs={'class': 'form-control'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'lastname': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'age': forms.DateInput(attrs={'class': 'form-control', 'data-target': '#datetimepicker1'}),
-            'photo': forms.FileInput
+            'photo': forms.FileInput()
         }
 
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают')
-        return cd['password2']
-
     def clean_login(self):
-        login = self.cleaned_data['login']
+        photo = self.cleaned_data['photo']
+        print(photo)
+        login = self.cleaned_data['username']
         try:
-            login2 = User.objects.get(login__iexact=login)
+            login2 = Users.objects.get(login__iexact=login)
             return login2
         except:
             return login
+
+
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(label='Имя пользователя', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
