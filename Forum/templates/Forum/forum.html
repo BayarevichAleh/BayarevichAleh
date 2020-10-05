@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}{{ forum.name }}{% endblock %}
+{% load staticfiles %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
     <div class="card text-center" style="margin: 15px auto">
         <div class="card-header" align="left">
@@ -21,7 +22,9 @@
                 {{ forum.create_date }}
             </div>
             <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%">
-                <a href="#">Написать сообщение</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{{ forum.get_absolute_url }}/add_message">Написать сообщение</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -33,7 +36,7 @@
                 {% else %}
                     <img src="../../static/media/userphotos/nophoto.png" alt="User photo" width="100%">
                 {% endif %}
-                <div align="center"> {{ item.id_user.login }}</div>
+                <div align="center"> {{ item.id_user.username }}</div>
             </div>
             <div class="col-3-4" style="width: 83%;margin-right: -2%">
                 <div class="card text-center">
@@ -45,6 +48,9 @@
                             {{ item.create_date }}
                         </div>
                         <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%">
+                            {% if request.user == item.id_user %}
+                                <a name="delete" href="#">Удалить</a> |
+                            {% endif %}
                             <a href="#">Ответить</a>
                         </div>
                     </div>
@@ -55,7 +61,9 @@
     {% endfor %}
     <div class="card text-center" style="margin: 0 auto">
         <div class="card-footer text-muted" align="right">
-            <a href="#">Написать сообщение</a>
+            {% if request.user.is_authenticated %}
+                <a href="{{ forum.get_absolute_url }}/add_message">Написать сообщение</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -2,13 +2,20 @@ from django import forms
 from .models import *
 from django.template.base import TemplateSyntaxError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-# from django.contrib.auth.models import User
+from django import forms
+from ckeditor.widgets import CKEditorWidget
+
 from django.contrib.auth import (
     authenticate, get_user_model, password_validation,
 )
 from django.core.exceptions import ValidationError
 
 
+class AddMessageForm(forms.ModelForm):
+    text = forms.CharField(widget=CKEditorWidget())
+    class Meta:
+        model = Message
+        fields = '__all__'
 
 class RegForm(UserCreationForm):
     password1 = forms.CharField(label='Пароль', max_length=100,

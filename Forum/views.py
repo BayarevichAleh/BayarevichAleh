@@ -1,21 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
-from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django.urls import reverse_lazy
-from .models import *
-from .forms import *
 from .utils import *
-from django.contrib.auth.forms import UserCreationForm
-
-from django.urls import path, include
 from django.contrib.auth import login, logout
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 
 
 def user_logout(request):
     logout(request)
+    print(request.POST.get('url'))
     return redirect(request.POST.get('url'))
 
 
@@ -82,20 +75,22 @@ class UserPage(MyListView):
 
 
 # Create your views here.
-class ForumPage(ListView):
+class ForumPage(MyListView):
     model = Message
     context_object_name = 'messages'
     template_name = 'Forum/forum.html'
+    allow_empty = False
     paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ForumPage, self).get_context_data(**kwargs)
-        context['title'] = 'Пользователи'
         try:
             context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
         except:
             return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
-
+        context['title'] = f"Форум :: {context['forum']}"
+        self.pages = context['page_obj']
+        context['pages'] = self.get_pages()
         return context
 
     def get_queryset(self):
@@ -107,7 +102,52 @@ class RegPage(CreateView):
     template_name = 'Forum/registration.html'
     success_url = reverse_lazy('index')
 
+
+class AddMessage(MyAuthorization, TemplateView):
+    template_name = 'Forum/add_message.html'
+    title = 'Главная страница'
+    userform = UserLoginForm
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, **kwargs):
+        context = super(AddMessage, self).get_context_data(**kwargs)
+        context['userform'] = self.userform
+        context['title'] = self.title
+        context['form'] = AddMessageForm
+        try:
+            context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
+        except:
+            return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.pk == None:
+            print(request.POST)
+            return redirect('index')
+        else:
+            return super(AddMessage, self).get(request, *args, **kwargs)
+
+
     def post(self, request, *args, **kwargs):
-        print(request.FILES)
+        context = self.get_context_data(**kwargs)
         print(request.POST)
-        return super(RegPage, self).post(request, *args, **kwargs)
+        forum = Forum.objects.get(pk=self.kwargs['forum_id'])
+        user = request.user
+        model = Message(id_forum=forum, id_user=user, text=request.POST['text'])
+        model.save()
+        return redirect(f"../{kwargs['forum_id']}")
+
+# class AddMessage(TemplateView):
+#     form = AddMessageForm
+#     template_name = 'Forum/add_message.html'
+#     success_url = reverse_lazy('index')
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super(AddMessage, self).get_context_data(**kwargs)
+#         context['title'] = 'Пользователи'
+#         try:
+#             context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
+#         except:
+#             return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
+#
+#         return context

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'ckeditor',
+    'ckeditor_uploader',
     'Forum.apps.ForumConfig',
     'bootstrap_datepicker_plus',
 
@@ -133,6 +135,14 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Forum/static/media')
 MEDIA_URL = '/media/'
 
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_RESTRICT_BY_USER = True
+
+CKEDITOR_CONFIGS = {
+'default': {
+    # 'toolbar': 'Full',
+    'width': 900,
+}}
 INTERNAL_IPS = [
     '127.0.0.1',
 ]

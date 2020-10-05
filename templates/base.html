@@ -23,38 +23,40 @@
                 {% block content %}
 
                 {% endblock %}
-                {% if page_obj.has_other_pages %}
-                    <div style="margin: 0 auto">
-                        <nav aria-label="...">
-                            <ul class="pagination">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                           href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                                    </li>
-                                {% endif %}
-                                {% for p in pages %}
-                                    {% if p == page_obj.number %}
-                                        <li class="page-item active">
-                                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
-                                        </li>
-                                    {% else %}
+                {% block paginator %}
+                    {% if page_obj.has_other_pages %}
+                        <div style="margin: 0 auto">
+                            <nav aria-label="...">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
                                         <li class="page-item">
-                                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                                            <a class="page-link"
+                                               href="?page={{ page_obj.previous_page_number }}">Previous</a>
                                         </li>
                                     {% endif %}
-                                {% endfor %}
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    </div>
-                {% endif %}
+                                    {% for p in pages %}
+                                        {% if p == page_obj.number %}
+                                            <li class="page-item active">
+                                                <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                {% endblock %}
             </div>
-            <div class="col-1-4" style="width: 24%; margin-top: 10px" >
+            <div class="col-1-4" style="width: 24%; margin-top: 10px">
                 {% block user %}
                     {% include 'inc/_login.html' %}
                 {% endblock %}
@@ -67,6 +69,7 @@
         © 2020 Бояревич Олег, по всем вопросам пишите по адресу BayarevichAleh@yandex.ru
     </div>
 </footer>
+
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 </html>
