@@ -16,13 +16,15 @@ class MessageAdminForm(forms.ModelForm):
         model = Message
         fields = '__all__'
 
+
 class UsersAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'first_name', 'last_name', 'age', 'status')
     list_display_links = ['username']
-    fields = ('username', 'password', 'email', 'first_name', 'last_name', 'age', 'photo', 'status')
+    fields = ('groups', 'username', 'password', 'email', 'first_name', 'last_name', 'age', 'photo', 'status')
     search_fields = ('username', 'first_name', 'last_name')
     list_editable = ('status',)
     list_filter = ('status',)
+
 
 
 class ForumAdmin(admin.ModelAdmin):

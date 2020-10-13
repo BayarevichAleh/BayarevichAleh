@@ -11,4 +11,6 @@ urlpatterns = [
     path('registration/',RegPage.as_view(), name='registration'),
     path('logout/',user_logout, name = 'logout'),
     path('forums/<int:forum_id>/add_message',AddMessage.as_view(), name='add_message'),
+    path('create_forum/',CreateForum.as_view(), name='add_forum'),
+    path('add_category/',AddCategory.as_view(), name='add_category'),
 ]

@@ -5,19 +5,42 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 
-from django.contrib.auth import (
-    authenticate, get_user_model, password_validation,
-)
-from django.core.exceptions import ValidationError
 
 
 class AddMessageForm(forms.ModelForm):
-    text = forms.CharField(widget=CKEditorWidget())
+    """
+    form for add message
+    """
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['text']
+        widgets = {
+            'text': CKEditorWidget(attrs={'class': 'form-control'}),
+        }
+
+
+class CreateForumForm(forms.ModelForm):
+    """
+    form for create forum
+    """
+
+    class Meta:
+        model = Forum
+        fields = ['category', 'name', 'commit', 'logo', 'is_pablished']
+        widgets = {
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'commit': CKEditorWidget(attrs={'class': 'form-control'}),
+            'logo': forms.FileInput(),
+            'is_pablished': forms.CheckboxInput(),
+        }
+
 
 class RegForm(UserCreationForm):
+    """
+    form for registration user
+    """
     password1 = forms.CharField(label='Пароль', max_length=100,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Повтор пароля', max_length=100,
@@ -48,6 +71,18 @@ class RegForm(UserCreationForm):
 
 
 class UserLoginForm(AuthenticationForm):
+    """
+    form for login user
+    """
     username = forms.CharField(label='Имя пользователя', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
+
+class AddCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['title','commit']
+        widgets = {
+            'title':forms.TextInput(attrs={'class':'form-control'}),
+            'commit':forms.Textarea(attrs={'class':'form-control'}),
+        }

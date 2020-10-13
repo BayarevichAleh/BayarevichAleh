@@ -12,11 +12,11 @@
                 <h6><a href="#" style="color: blue">{{ item.username }}</a></h6>
             </div>
             <div class="col-3-4">
-                <h5>{{ item.first_name }} {{ item.last_name }}</h5>
+                <h5><a href="#" style="color: darkblue">{{ item.first_name }} {{ item.last_name }}</a></h5>
                 <font color="#00008b">Возраст: </font>{{ item.age }}<br>
                 <font color="#00008b">Дата регистрации: </font>{{ item.date_joined|date:"d.m.Y" }}<br>
                 <font color="#00008b">Последний вход: </font>{{ item.last_login|date:"d.m.Y H.i" }}<br>
-                <font color="#00008b">Группа: {{ item. }}</font><br>
+                <font color="#00008b">Группа: </font>{{ item.groups.get }}<br>
                 <font color="#00008b">Статус: </font>
                 {% if item.status == "active" %}
                     Активен

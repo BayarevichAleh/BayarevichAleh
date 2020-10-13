@@ -11,10 +11,6 @@ from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 class Users(AbstractUser):
-    # group_choices = (
-    #     ('admin', 'Администратор'),
-    #     ('user', 'Пользователь'),
-    # )
     status_choices = (
         ('active', 'Активен'),
         ('warn', 'Вынесено предупреждение'),
@@ -34,59 +30,12 @@ class Users(AbstractUser):
         ordering = ['username']
 
 
-# class User(AbstractBaseUser):
-#     """
-#     Модель хранения данных пользователей
-#     """
-#     username_validator = UnicodeUsernameValidator()
-#     group_choices = (
-#         ('admin', 'Администратор'),
-#         ('user', 'Пользователь'),
-#     )
-#     status_choices = (
-#         ('active', 'Активен'),
-#         ('warn', 'Вынесено предупреждение'),
-#         ('block', 'Заблокирован'),
-#         ('delate', 'Удален'),
-#     )
-#     group = models.CharField(max_length=150, choices=group_choices, default='user', verbose_name='Группа')
-#     username = models.CharField(
-#         _('username'),
-#         max_length=150,
-#         unique=True,
-#         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-#         validators=[username_validator],
-#         error_messages={
-#             'unique': _("A user with that username already exists."),
-#         },
-#     )  # Логин юзера
-#     # password = models.CharField(max_length=100, verbose_name='Пароль')  # Его пароль
-#     email = models.EmailField(max_length=50, verbose_name='E-mail')  # E-mail юзера
-#     first_name = models.CharField(max_length=50, verbose_name='Имя')  # Имя юзера
-#     last_name = models.CharField(blank=True, max_length=100, verbose_name='Фамилия')  # Фамилия юзера (не обязательное)
-#     age = models.DateField(blank=True, verbose_name='Дата Рождения')  # Возраст юзера
-#     photo = models.ImageField(blank=True, upload_to='userphotos/', verbose_name='Фото')  # Фото юзера
-#     registration_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации')  # Дата регистрации
-#     status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
-#
-#     USERNAME_FIELD = 'username'
-#     objects = UserManager()
-#
-#     def __str__(self):
-#         return self.username
-#
-#
-#     class Meta:
-#         verbose_name = 'Пользователь'
-#         verbose_name_plural = 'Пользователи'
-#         ordering = ['username']
-
 
 class Category(models.Model):
     """
-    Модель категорий форумов
+    model of forum's categories
     """
-    title = models.CharField(max_length=150, db_index=True, verbose_name='Название категории')  # Название категории
+    title = models.CharField(max_length=150, db_index=True, unique=True, verbose_name='Название категории')  # Название категории
     commit = models.TextField(max_length=1000, verbose_name='Описание категории')  # Краткое описание категории
 
     def get_absolute_url(self):
@@ -98,16 +47,16 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Котегория'
         verbose_name_plural = 'Категории'
-        ordering = ['title']
+        ordering = ['pk']
 
 
 class Forum(models.Model):
     """
-    Модель форумов
+    model of forums
     """
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')  # id категории форумов
-    name = models.CharField(max_length=100, verbose_name='Название')  # Название форума
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')  # Название форума
     commit = models.TextField(verbose_name='Описание')  # Краткое описание форума
     logo = models.ImageField(blank=True, upload_to='forumlogos/', verbose_name='Логотип')  # логотип форума
     creator = models.ForeignKey('Users', on_delete=models.PROTECT, null=True, verbose_name='Создатель')  # id создателя
@@ -127,12 +76,12 @@ class Forum(models.Model):
     class Meta:
         verbose_name = 'Форум'
         verbose_name_plural = 'Форумы'
-        ordering = ['name']
+        ordering = ['-create_date']
 
 
 class Message(models.Model):
     """
-    Модель сообщений
+    model of messagies
     """
     id_forum = models.ForeignKey('Forum', on_delete=models.CASCADE, null=True,
                                  verbose_name='Форум')  # id форума к которому пренадлежит сообщение
@@ -152,7 +101,7 @@ class Message(models.Model):
 
 class File(models.Model):
     """
-    Модель файлов
+    model of seve user's filies
     """
     id_user = models.IntegerField()  # id юзера кому пренадлежит файл
     file = models.FileField(

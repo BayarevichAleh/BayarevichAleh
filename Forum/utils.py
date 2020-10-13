@@ -6,6 +6,9 @@ from django.utils.translation import gettext as _
 
 
 class Mypaginator(object):
+    """
+    Mixin of change pagination
+    """
     pages = object
 
     def get_pages(self):
@@ -18,6 +21,10 @@ class Mypaginator(object):
 
 
 class MyListView(ListView, Mypaginator):
+    """
+    chenged class ListView
+    - add POST method
+    """
     title = ''
     
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -53,6 +60,10 @@ class MyListView(ListView, Mypaginator):
 
 
 class MyAuthorization(object):
+    """
+    Authorization class
+
+    """
     userform = object
     title = ''
 

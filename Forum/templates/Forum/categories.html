@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
     {% for item in categories %}
         <div class="{% cycle 'card text-white bg-primary mb-3' 'card text-white bg-secondary mb-3' 'card text-white bg-success mb-3' 'card text-white bg-danger mb-3' 'card text-white bg-warning mb-3' 'card text-white bg-info mb-3' 'card bg-light mb-3' 'card text-white bg-dark mb-3' %}"
@@ -14,7 +15,16 @@
         </div>
     {% endfor %}
 {% endblock %}
+{% block paginator %}
+    {% if request.user.is_authenticated %}
+        <div class="row" style="float: right">
+            <a href="{% url 'add_category' %}" class="btn btn-primary">Добавить категорию</a>
+        </div>
+    {% endif %}
 
+    {{ block.super }}
+
+{% endblock %}
 {% block user %}
     {{ block.super }}
 {% endblock %}
