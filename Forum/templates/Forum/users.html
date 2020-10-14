@@ -2,33 +2,36 @@
 
 {% block content %}
     {% for item in users %}
-        <div class="row" style="margin: 15px auto; background-color: darkgrey">
-            <div class="col-1-4" align="center" style="width: 20%">
-                {% if item.photo %}
-                    <img src="../static{{ item.photo.url }}" alt="Photo" width="100%">
-                {% else %}
-                    <img src="../static/media/userphotos/nophoto.png" alt="Photo" width="100%">
-                {% endif %}
-                <h6><a href="#" style="color: blue">{{ item.username }}</a></h6>
+        {% if item != request.user %}
+            <div class="row" style="margin: 15px auto; background-color: darkgrey">
+                <div class="col-1-4" align="center" style="width: 20%">
+                    {% if item.photo %}
+                        <img src="../static{{ item.photo.url }}" alt="Photo" width="100%">
+                    {% else %}
+                        <img src="../static/media/userphotos/nophoto.png" alt="Photo" width="100%">
+                    {% endif %}
+                    <h6><a href="{{ item.get_absolute_url }}" style="color: blue">{{ item.username }}</a></h6>
+                </div>
+                <div class="col-3-4">
+                    <h5><a href="{{ item.get_absolute_url }}"
+                           style="color: darkblue">{{ item.first_name }} {{ item.last_name }}</a></h5>
+                    <font color="#00008b">Дата рождения: </font>{{ item.age|date:"d E Y г." }}<br>
+                    <font color="#00008b">Дата регистрации: </font>{{ item.date_joined|date:"d E Y г." }}<br>
+                    <font color="#00008b">Последний вход: </font>{{ item.last_login|date:"d E Y г. H.i" }}<br>
+                    <font color="#00008b">Группа: </font>{{ item.groups.get }}<br>
+                    <font color="#00008b">Статус: </font>
+                    {% if item.status == "active" %}
+                        Активен
+                    {% elif item.status == "warn" %}
+                        Вынесено предупреждени
+                    {% elif item.status == "block" %}
+                        Заблокирован
+                    {% elif item.status == "delate" %}
+                        Удален
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-3-4">
-                <h5><a href="#" style="color: darkblue">{{ item.first_name }} {{ item.last_name }}</a></h5>
-                <font color="#00008b">Возраст: </font>{{ item.age }}<br>
-                <font color="#00008b">Дата регистрации: </font>{{ item.date_joined|date:"d.m.Y" }}<br>
-                <font color="#00008b">Последний вход: </font>{{ item.last_login|date:"d.m.Y H.i" }}<br>
-                <font color="#00008b">Группа: </font>{{ item.groups.get }}<br>
-                <font color="#00008b">Статус: </font>
-                {% if item.status == "active" %}
-                    Активен
-                {% elif item.status == "warn" %}
-                    Вынесено предупреждени
-                {% elif item.status == "block" %}
-                    Заблокирован
-                {% elif item.status == "delate" %}
-                    Удален
-                {% endif %}
-            </div>
-        </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}
 

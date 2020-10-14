@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card text-center" style="margin: 15px auto">
+        <div class="card-header" align="left">
+            <h5>{{ user.username }}</h5></a>
+        </div>
+        <div class="card-body" align="left">
+            <div class="col-1-4" style="width: 20%">
+                {% if  user.photo %}
+                    <img src="../../static{{ user.photo.url }}" width="100%" alt="Аватар">
+                {% else %}
+                    <img src="../../static/media/userphotos/nophoto.png" width="100%" alt="Аватар">
+                {% endif %}
+            </div>
+            <div class="col-3-4">
+                <h5 style="color:darkblue;">{{ user.last_name }} {{ user.first_name }}</h5>
+                <font color="#00008b">Дата рождения: </font>{% if user.age != None %}{{ user.age|date:"d E Y г." }}{% else %}Не
+                указана{% endif %}<br>
+                <font color="#00008b">Дата регистрации: </font>{{ user.date_joined|date:"d E Y г." }}<br>
+                <font color="#00008b">Последний вход: </font>{{ user.last_login|date:"d E Y г. H.i" }}<br>
+                <font color="#00008b">Группа: </font>{{ user.groups.get }}<br>
+                <font color="#00008b">Статус: </font>
+                {% if user.status == "active" %}
+                    Активен
+                {% elif user.status == "warn" %}
+                    Вынесено предупреждени
+                {% elif user.status == "block" %}
+                    Заблокирован
+                {% elif user.status == "delate" %}
+                    Удален
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="card-footer text-muted" align="left">
+            <h6 style="color: darkblue">Форумы:</h6>
+            {% for item in user_forums %}
+                <a href="{{ item.get_absolute_url }}">{{ item }}</a><br>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block user %}
+    {{ block.super }}
+{% endblock %}

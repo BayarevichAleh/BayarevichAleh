@@ -15,14 +15,16 @@
                 {% endif %}
             </div>
             <div class="col-3-4"><p class="card-text" align="justify">{{ forum.commit }}</p></div>
-
         </div>
         <div class="card-footer text-muted" align="left">
             <div class="col" style="width: 70%; float: left; margin-left: -15px">
+                Категория: <a href="{{ forum.category.get_absolute_url }}">{{ forum.category }}</a><br>
+                Автор: <a href="{{ forum.creator.get_absolute_url }}">{{ forum.creator }}</a><br>
                 {{ forum.create_date }}
             </div>
-            <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%">
+            <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%; text-align: right">
                 {% if request.user.is_authenticated %}
+                    <br><br>
                     <a href="{{ forum.get_absolute_url }}/add_message">Написать сообщение</a>
                 {% endif %}
             </div>
@@ -48,10 +50,14 @@
                             {{ item.create_date }}
                         </div>
                         <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%">
-                            {% if request.user == item.id_user %}
-                                <a name="delete" href="#">Удалить</a> |
-                            {% endif %}
-                            <a href="#">Ответить</a>
+                                <form action="#" method="get" id="delete">
+                                    {% csrf_token %}
+                                    {% if request.user == item.id_user %}
+                                    <a href="{{ forum.get_absolute_url }}?delete={{ item.pk }}" onclick="document.getElementById('form1').submit(); return false;">Удалить</a> |
+                                    {% endif %}
+                                    <a href="#" onclick="document.getElementById('form1').submit(); return false;">Ответить</a>
+                                </form>
+
                         </div>
                     </div>
                 </div>

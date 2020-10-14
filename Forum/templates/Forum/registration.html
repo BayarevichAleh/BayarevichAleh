@@ -26,13 +26,13 @@
         integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
 {% extends 'base.html' %}
 
-{% block title %}Регистрация{% endblock %}
+
 
 {% block content %}
     <form action="{% url 'registration' %}" method="post" enctype="multipart/form-data" autocomplete="off">
         <div class="col" style="margin: 15px auto; width: 800px">
             {% csrf_token %}
-            {{ form.non_field.errors }}
+            {{ form.non_field_errors }}
             <div class="form-group">
                 <div class="row" style="width: 800px">
                     <div class="col-1-4" style="width: 160px">

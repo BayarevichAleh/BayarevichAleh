@@ -6,6 +6,7 @@ from django.contrib.auth.models import UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import *
 
 
 
@@ -20,6 +21,9 @@ class Users(AbstractUser):
     age = models.DateField(blank=True, null=True, verbose_name='Дата Рождения', )  # Возраст юзера
     photo = models.ImageField(blank=True, upload_to='userphotos/', verbose_name='Фото')  # Фото юзера
     status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
+
+    def get_absolute_url(self):
+        return reverse('user', kwargs={"user_id": self.pk})
 
     def __str__(self):
         return self.username

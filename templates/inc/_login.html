@@ -14,7 +14,7 @@
     <form action="{% url 'logout' %}" method="post" autocomplete="off">
         {% csrf_token %}
         <input type="hidden" value='{{ request.path }}'
-                name='url'>
+               name='url'>
         <div style="float: right">
             <button type="submit" class="btn btn-primary">Выйти</button>
         </div>
@@ -22,7 +22,26 @@
 {% else %}
     <form method="post" autocomplete="off">
         {% csrf_token %}
-        {{ userform.as_p }}
+        <div class="row">
+            <div class="col-1-4" style="width: 100%">
+                <label for="{{ userform.username.id_for_label }}">{{ userform.username.label }}:</label></div>
+            <div class="col-1-4" style="width: 100%">{{ userform.username }}</div>
+            <div style="color: red">
+                {{ userform.username.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1-4" style="width: 100%">
+                <label for="{{ userform.password.id_for_label }}">{{ userform.password.label }}:</label></div>
+            <div class="col-1-4" style="width: 100%">{{ userform.password }}</div>
+            <div style="color: red">
+                {{ userform.password.errors }}
+            </div>
+        </div>
+        <div style="color: red">
+            {{ userform.non_field_errors }}
+        </div>
+        <br>
         <button type="submit" class="btn btn-primary">Войти</button>
         <a href="{% url 'registration' %}" class="btn btn-primary">Регистрация</a>
     </form>

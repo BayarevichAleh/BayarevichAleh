@@ -27,6 +27,8 @@
 
             </div>
             <div class="card-footer text-muted" align="left">
+                Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a><br>
+                Автор: <a href="{{ item.creator.get_absolute_url }}">{{ item.creator }}</a><br>
                 {{ item.create_date }}
             </div>
         </div>

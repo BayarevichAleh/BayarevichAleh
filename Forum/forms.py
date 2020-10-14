@@ -16,7 +16,7 @@ class AddMessageForm(forms.ModelForm):
         model = Message
         fields = ['text']
         widgets = {
-            'text': CKEditorWidget(attrs={'class': 'form-control'}),
+            'text': CKEditorWidget(attrs={'class': 'form-control','rows':7,'cols':100}),
         }
 
 
@@ -60,8 +60,6 @@ class RegForm(UserCreationForm):
         }
 
     def clean_login(self):
-        photo = self.cleaned_data['photo']
-        print(photo)
         login = self.cleaned_data['username']
         try:
             login2 = Users.objects.get(login__iexact=login)
@@ -86,3 +84,4 @@ class AddCategoryForm(forms.ModelForm):
             'title':forms.TextInput(attrs={'class':'form-control'}),
             'commit':forms.Textarea(attrs={'class':'form-control'}),
         }
+
