@@ -6,10 +6,10 @@
         <img src="{% static 'media/userphotos/nophoto.png' %}" alt="Photo" width="100%">
     {% endif %}
     <h4 align="center">{{ request.user.username }}</h4>
-    <a href="#">Мои форумы</a><br>
+    <a href="{{ request.user.get_absolute_url }}">Мой профиль</a><br>
+    <a href="{% url 'myforums' %}">Мои форумы</a><br>
     <a href="#">Мои сообщения</a><br>
     <a href="#">Мои файлы</a><br>
-    <a href="#">Мой профиль</a><br>
     <a href="{% url 'add_forum' %}">Создать форум</a><br>
     <form action="{% url 'logout' %}" method="post" autocomplete="off">
         {% csrf_token %}

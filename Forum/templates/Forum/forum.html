@@ -9,9 +9,9 @@
         <div class="card-body" align="left">
             <div class="col-1-4" style="width: 20%">
                 {% if  forum.logo %}
-                    <img src="../../static{{ forum.logo.url }}" width="100%" alt="Логотип">
+                    <img src="/static{{ forum.logo.url }}" width="100%" alt="Логотип">
                 {% else %}
-                    <img src="../../static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
+                    <img src="/static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
                 {% endif %}
             </div>
             <div class="col-3-4"><p class="card-text" align="justify">{{ forum.commit }}</p></div>
@@ -34,29 +34,33 @@
         <div class="container">
             <div class="col-1-4" style="width: 15%; margin-left: 0px; margin-right: 5px" align="center">
                 {% if item.id_user.photo %}
-                    <img src="../../static{{ item.id_user.photo.url }}" alt="User photo" width="100%">
+                    <img src="/static{{ item.id_user.photo.url }}" alt="User photo" width="100%">
                 {% else %}
-                    <img src="../../static/media/userphotos/nophoto.png" alt="User photo" width="100%">
+                    <img src="/static/media/userphotos/nophoto.png" alt="User photo" width="100%">
                 {% endif %}
-                <div align="center"> {{ item.id_user.username }}</div>
+                <div align="center"><a href="{{ item.id_user.get_absolute_url }}">{{ item.id_user.username }}</a></div>
             </div>
             <div class="col-3-4" style="width: 83%;margin-right: -2%">
                 <div class="card text-center">
                     <div class="card-body" align="left">
                         {{ item.text }}
                     </div>
-                    <div class="card-footer text-muted" align="left" style="">
-                        <div class="col" style="width: 70%; float: left; margin-left: -15px">
+                    <div class="card-footer text-muted" align="left">
+                        <div class="col" style="width: 50%; float: left; margin-left: -15px">
                             {{ item.create_date }}
                         </div>
-                        <div class="col" align="right" style="width: 35%; float: left; margin-right: -5%">
-                                <form action="#" method="get" id="delete">
-                                    {% csrf_token %}
-                                    {% if request.user == item.id_user %}
-                                    <a href="{{ forum.get_absolute_url }}?delete={{ item.pk }}" onclick="document.getElementById('form1').submit(); return false;">Удалить</a> |
-                                    {% endif %}
-                                    <a href="#" onclick="document.getElementById('form1').submit(); return false;">Ответить</a>
-                                </form>
+                        <div class="col" align="right" style="width: 50%; float: right; margin-right:-15px">
+                            <form action="#" method="get" id="delete">
+                                {% csrf_token %}
+                                {% if request.user == item.id_user %}
+                                    <a href="{{ forum.get_absolute_url }}/edit_message/{{ item.pk }}" onclick="document.getElementById('form1').submit(); return false;">Редактировать</a> |
+                                    <a href="{{ forum.get_absolute_url }}?delete={{ item.pk }}"
+                                       onclick="document.getElementById('form1').submit(); return false;">Удалить</a>
+                                {% else %}
+                                <a href="#"
+                                   onclick="document.getElementById('form1').submit(); return false;">Ответить</a>
+                                {% endif %}
+                            </form>
 
                         </div>
                     </div>

@@ -6,12 +6,15 @@
         <div class="card-footer text-muted" align="left">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ form.non_field_errors }}
                 <div class="form-group">
                     <div class="row" style="width: 800px">
                         <div class="col-1-4" style="width: 160px">
                             <label for="{{ form.category.id_for_label }}">{{ form.category.label }}:</label></div>
                         <div class="col-1-4" style="width: 350px">{{ form.category }}</div>
-                        <div class="col-1-4" style="width: 200px; margin-left: 10px"><a href="{% url 'add_category' %}" class="btn btn-primary">Добавить категорию</a></div>
+                        <div class="col-1-4" style="width: 200px; margin-left: 10px"><a href="{% url 'add_category' %}"
+                                                                                        class="btn btn-primary">Добавить
+                            категорию</a></div>
                         <div style="color: red">
                             {{ form.category.errors }}
                         </div>
@@ -50,15 +53,16 @@
                 <div class="form-group">
                     <div class="row" style="width: 800px">
                         <div class="col-1-4" style="width: 160px">
-                            <label for="{{ form.is_pablished.id_for_label }}">{{ form.is_pablished.label }}:</label></div>
+                            <label for="{{ form.is_pablished.id_for_label }}">{{ form.is_pablished.label }}:</label>
+                        </div>
                         <div class="col-1-4" style="width: 350px">{{ form.is_pablished }}</div>
                         <div style="color: red">
                             {{ form.is_pablished.errors }}
                         </div>
                     </div>
                 </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Создать</button>
+                <button type="submit" class="btn btn-primary">{% if edit == True %}Сохранить{% else %}
+                    Добавить{% endif %}</button>
             </form>
         </div>
     </div>

@@ -15,8 +15,7 @@
             </div>
             <div class="col-3-4">
                 <h5 style="color:darkblue;">{{ user.last_name }} {{ user.first_name }}</h5>
-                <font color="#00008b">Дата рождения: </font>{% if user.age != None %}
-                {{ user.age|date:"d E Y г." }}{% else %}Не
+                <font color="#00008b">Дата рождения: </font>{% if user.age != None %}{{ user.age|date:"d E Y г." }}{% else %}Не
                 указана{% endif %}<br>
                 <font color="#00008b">Дата регистрации: </font>{{ user.date_joined|date:"d E Y г." }}<br>
                 <font color="#00008b">Последний вход: </font>{{ user.last_login|date:"d E Y г. H.i" }}<br>
@@ -31,23 +30,14 @@
                 {% elif user.status == "delate" %}
                     Удален
                 {% endif %}
-                <br>
-                <a class="btn btn-primary" href="#">Редактировать</a>
             </div>
 
         </div>
         <div class="card-footer text-muted" align="left">
             <h6 style="color: darkblue">Форумы:</h6>
-            <form action="#" method="get" id="delete">
-                {% csrf_token %}
-                {% for item in user_forums %}
-                    <div class="row" style="width: 800px">
-                        <div class="col" style="width: 70%">
-                            <a href="{{ item.get_absolute_url }}">{{ item }}</a><br>
-                        </div>
-                    </div>
-                {% endfor %}
-            </form>
+            {% for item in user_forums %}
+                <a href="{{ item.get_absolute_url }}">{{ item }}</a><br>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

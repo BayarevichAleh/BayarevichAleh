@@ -23,7 +23,7 @@ class Users(AbstractUser):
     status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
 
     def get_absolute_url(self):
-        return reverse('user', kwargs={"user_id": self.pk})
+        return reverse('user', kwargs={"username": self.username})
 
     def __str__(self):
         return self.username
@@ -93,6 +93,9 @@ class Message(models.Model):
                                 verbose_name='Пользователь')  # id юзера создавшего сообщение
     text = models.TextField()  # Содержание сообщения
     create_date = models.DateTimeField(auto_now_add=True)  # Дата создания сообщения
+
+    def get_absolute_url(self):
+        return reverse('message', kwargs={"message_id": self.pk})
 
     class Meta:
         verbose_name = 'Сообщение'

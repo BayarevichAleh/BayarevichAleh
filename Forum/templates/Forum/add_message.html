@@ -9,9 +9,9 @@
         <div class="card-body" align="left">
             <div class="col-1-4" style="width: 20%">
                 {% if  forum.logo %}
-                    <img src="../../static{{ forum.logo.url }}" width="100%" alt="Логотип">
+                    <img src="/static{{ forum.logo.url }}" width="100%" alt="Логотип">
                 {% else %}
-                    <img src="../../static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
+                    <img src="/static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
                 {% endif %}
             </div>
             <div class="col-3-4"><p class="card-text" align="justify">{{ forum.commit }}</p></div>

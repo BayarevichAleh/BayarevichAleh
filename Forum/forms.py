@@ -6,7 +6,6 @@ from django import forms
 from ckeditor.widgets import CKEditorWidget
 
 
-
 class AddMessageForm(forms.ModelForm):
     """
     form for add message
@@ -16,7 +15,7 @@ class AddMessageForm(forms.ModelForm):
         model = Message
         fields = ['text']
         widgets = {
-            'text': CKEditorWidget(attrs={'class': 'form-control','rows':7,'cols':100}),
+            'text': CKEditorWidget(attrs={'class': 'form-control', 'rows': 7, 'cols': 100}),
         }
 
 
@@ -24,14 +23,13 @@ class CreateForumForm(forms.ModelForm):
     """
     form for create forum
     """
-
     class Meta:
         model = Forum
         fields = ['category', 'name', 'commit', 'logo', 'is_pablished']
         widgets = {
             'category': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'commit': CKEditorWidget(attrs={'class': 'form-control'}),
+            'commit': CKEditorWidget(attrs={'class': 'form-control','rows': 7, 'cols': 100}),
             'logo': forms.FileInput(),
             'is_pablished': forms.CheckboxInput(),
         }
@@ -51,7 +49,6 @@ class RegForm(UserCreationForm):
         fields = ['username', 'email', 'first_name', 'last_name', 'age', 'photo']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
-            # 'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -79,9 +76,8 @@ class UserLoginForm(AuthenticationForm):
 class AddCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['title','commit']
+        fields = ['title', 'commit']
         widgets = {
-            'title':forms.TextInput(attrs={'class':'form-control'}),
-            'commit':forms.Textarea(attrs={'class':'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'commit': forms.Textarea(attrs={'class': 'form-control'}),
         }
-
