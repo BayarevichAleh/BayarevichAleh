@@ -1,21 +1,8 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import *
-
-
-# Register your models here.
-
 from django import forms
 from django.contrib import admin
 from ckeditor.widgets import CKEditorWidget
 
-
-class MessageAdminForm(forms.ModelForm):
-    text = forms.CharField(widget=CKEditorWidget())
-    class Meta:
-        model = Message
-        fields = '__all__'
-
+from .models import *
 
 class UsersAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'first_name', 'last_name', 'age', 'status')
@@ -39,9 +26,14 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ['title']
 
+class MessageFormAdmin(forms.ModelForm):
+    text = forms.CharField(widget=CKEditorWidget())
+    class Meta:
+        model = Message
+        fields = '__all__'
 
 class MessageAdmin(admin.ModelAdmin):
-    form = MessageAdminForm
+    form = MessageFormAdmin
     list_display = ('id', 'id_user', 'id_forum', 'text', 'create_date')
     list_display_links = ['id', 'id_user', 'id_forum']
     search_fields = ('id', 'id_user', 'id_forum')

@@ -53,12 +53,14 @@
                             <form action="#" method="get" id="delete">
                                 {% csrf_token %}
                                 {% if request.user == item.id_user %}
-                                    <a href="{{ forum.get_absolute_url }}/edit_message/{{ item.pk }}" onclick="document.getElementById('form1').submit(); return false;">Редактировать</a> |
+                                    <a href="{{ forum.get_absolute_url }}/edit_message/{{ item.pk }}"
+                                       onclick="document.getElementById('form1').submit(); return false;">Редактировать</a>
+                                    |
                                     <a href="{{ forum.get_absolute_url }}?delete={{ item.pk }}"
                                        onclick="document.getElementById('form1').submit(); return false;">Удалить</a>
                                 {% else %}
-                                <a href="#"
-                                   onclick="document.getElementById('form1').submit(); return false;">Ответить</a>
+                                    <a href="#"
+                                       onclick="document.getElementById('form1').submit(); return false;">Ответить</a>
                                 {% endif %}
                             </form>
 

@@ -1,16 +1,11 @@
-from django import forms
-from .models import *
-from django.template.base import TemplateSyntaxError
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 
+from .models import *
+
 
 class AddMessageForm(forms.ModelForm):
-    """
-    form for add message
-    """
-
     class Meta:
         model = Message
         fields = ['text']
@@ -20,25 +15,19 @@ class AddMessageForm(forms.ModelForm):
 
 
 class CreateForumForm(forms.ModelForm):
-    """
-    form for create forum
-    """
     class Meta:
         model = Forum
-        fields = ['category', 'name', 'commit', 'logo', 'is_pablished']
+        fields = ['category', 'name', 'commit', 'logo', 'is_published']
         widgets = {
             'category': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'commit': CKEditorWidget(attrs={'class': 'form-control','rows': 7, 'cols': 100}),
+            'commit': CKEditorWidget(attrs={'class': 'form-control', 'rows': 7, 'cols': 100}),
             'logo': forms.FileInput(),
-            'is_pablished': forms.CheckboxInput(),
+            'is_published': forms.CheckboxInput(),
         }
 
 
-class RegForm(UserCreationForm):
-    """
-    form for registration user
-    """
+class RegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Пароль', max_length=100,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Повтор пароля', max_length=100,
@@ -56,21 +45,35 @@ class RegForm(UserCreationForm):
             'photo': forms.FileInput()
         }
 
-    def clean_login(self):
-        login = self.cleaned_data['username']
-        try:
-            login2 = Users.objects.get(login__iexact=login)
-            return login2
-        except:
-            return login
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if Users.objects.filter(username__iexact=username).exists():
+            return Users.objects.get(username__iexact=username)
+        return username
+
+
+class EditUserForm(UserChangeForm):
+    class Meta:
+        model = Users
+        fields = ['email', 'first_name', 'last_name', 'age', 'photo']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'age': forms.DateInput(attrs={'class': 'form-control', 'data-target': '#datetimepicker1'}),
+            'photo': forms.FileInput()
+        }
 
 
 class UserLoginForm(AuthenticationForm):
-    """
-    form for login user
-    """
     username = forms.CharField(label='Имя пользователя', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if Users.objects.filter(username__iexact=username).exists():
+            return Users.objects.get(username__iexact=username)
+        return username
 
 
 class AddCategoryForm(forms.ModelForm):

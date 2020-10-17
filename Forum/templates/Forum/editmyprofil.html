@@ -29,40 +29,10 @@
 
 
 {% block content %}
-    <form action="{% url 'registration' %}" method="post" enctype="multipart/form-data" autocomplete="off">
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
         <div class="col" style="margin: 15px auto; width: 800px">
             {% csrf_token %}
             {{ form.non_field_errors }}
-            <div class="form-group">
-                <div class="row" style="width: 800px">
-                    <div class="col-1-4" style="width: 160px">
-                        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label></div>
-                    <div class="col-1-4" style="width: 240px">{{ form.username }}</div>
-                    <div style="color: red">
-                        {{ form.username.errors }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-1-4" style="width: 160px"><label
-                            for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label></div>
-                    <div class="col-1-4" style="width: 240px">{{ form.password1 }}</div>
-                    <div style="color: red">
-                        {{ form.password1.errors }}
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-1-4" style="width: 160px"><label
-                            for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label></div>
-                    <div class="col-1-4" style="width: 240px">{{ form.password2 }} </div>
-                    <div style="color: red">
-                        {{ form.password2.errors }}
-                    </div>
-                </div>
-            </div>
             <div class="form-group">
                 <div class="row">
                     <div class="col-1-4" style="width: 160px"><label
@@ -85,7 +55,7 @@
             </div>
             <div class="form-group">
                 <div class="row">
-                        <div class="col-1-4" style="width: 160px"><label
+                    <div class="col-1-4" style="width: 160px"><label
                             for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}:</label></div>
                     <div class="col-1-4" style="width: 240px">{{ form.last_name }}</div>
                     <div style="color: red">
@@ -138,4 +108,5 @@
 {% endblock %}
 
 {% block user %}
+    {{ block.super }}
 {% endblock %}

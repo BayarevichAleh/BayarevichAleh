@@ -32,7 +32,9 @@
                     Удален
                 {% endif %}
                 <br>
-                <a class="btn btn-primary" href="#">Редактировать</a>
+                {% if request.user.username == user.username %}
+                    <a class="btn btn-primary" href="{% url 'edit_my_profil' %}">Редактировать</a>
+                {% endif %}
             </div>
 
         </div>

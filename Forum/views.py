@@ -1,36 +1,76 @@
-from django.http import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
-from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import ListView, CreateView, TemplateView, UpdateView
 from django.urls import reverse_lazy
-from django.views.generic.edit import BaseCreateView
+from django.contrib.auth import login, logout, update_session_auth_hash
+from django.utils.translation import gettext as _
 
 from .utils import *
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 
 
-def user_logout(request):
-    """
-    logout function
-    :param request:
-    :return: redirect at URL last HTML page
-    """
-    logout(request)
-    return redirect(request.POST.get('url'))
+class MyListView(ListView, MyPaginator):
+    title = ''
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(__class__, self).get_context_data(**kwargs)
+        context['userform'] = UserLoginForm
+        context['title'] = self.title
+        self.pages = context['page_obj']
+        context['pages'] = self.get_pages()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+        if not allow_empty:
+            if self.get_paginate_by(self.object_list) is not None and hasattr(self.object_list, 'exists'):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404(_('Empty list and “%(class_name)s.allow_empty” is False.') % {
+                    'class_name': self.__class__.__name__,
+                })
+        context = self.get_context_data(**kwargs)
+        userform = UserLoginForm(data=request.POST)
+        if userform.is_valid():
+            user = userform.get_user()
+            login(request, user)
+        else:
+            context['userform'] = userform
+        return self.render_to_response(context)
 
 
-class HomePage(MyAuthorization, TemplateView):
-    """
-    show HomePage
-    """
+class UserLogout(TemplateView):
+    template_name = 'Forum/index.html'
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect(request.GET.get('url'))
+
+
+class HomePageView(TemplateView):
     template_name = 'Forum/index.html'
     title = 'Главная страница'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(__class__, self).get_context_data(**kwargs)
+        context['userform'] = UserLoginForm
+        return context
 
-class CategoriesPage(MyListView):
-    """
-    show page with categories
-    """
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        userform = UserLoginForm(data=request.POST)
+        if userform.is_valid():
+            user = userform.get_user()
+            login(request, user)
+        else:
+            context['userform'] = userform
+
+        return self.render_to_response(context)
+
+
+class CategoriesView(MyListView):
     model = Category
     title = 'Категории'
     template_name = 'Forum/categories.html'
@@ -38,17 +78,8 @@ class CategoriesPage(MyListView):
     allow_empty = True
     paginate_by = 10
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(CategoriesPage, self).get_context_data(**kwargs)
-        self.pages = context['page_obj']
-        context['pages'] = self.get_pages()
-        return context
 
-
-class CategoryPage(MyListView):
-    """
-    show page with forums of selected category or all forums if category_id = 0
-    """
+class CategoryView(MyListView):
     model = Forum
     template_name = 'Forum/category.html'
     context_object_name = 'forums'
@@ -56,7 +87,7 @@ class CategoryPage(MyListView):
     paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(__class__, self).get_context_data(**kwargs)
+        context = super(CategoryView, self).get_context_data(**kwargs)
         if self.kwargs['category_id'] != 0:
             context['category'] = Category.objects.get(pk=self.kwargs['category_id'])
             context['title'] = f"Категория :: {context['category']}"
@@ -69,15 +100,12 @@ class CategoryPage(MyListView):
 
     def get_queryset(self):
         if self.kwargs['category_id'] != 0:
-            return Forum.objects.filter(category_id=self.kwargs['category_id'], is_pablished=True)
+            return Forum.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
         else:
-            return Forum.objects.all()
+            return Forum.objects.filter(is_published=True)
 
 
-class UsersPage(MyListView):
-    """
-    show page with all users
-    """
+class UsersView(MyListView):
     model = Users
     title = 'Пользователи'
     context_object_name = 'users'
@@ -85,31 +113,21 @@ class UsersPage(MyListView):
     allow_empty = False
     paginate_by = 10
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(UsersPage, self).get_context_data(**kwargs)
-        context['title'] = 'Пользователи'
-        self.pages = context['page_obj']
-        context['pages'] = self.get_pages()
-        return context
 
-
-class ForumPage(MyListView):
-    """
-    show page with selected forum
-    """
+class ForumView(MyListView):
     model = Message
     context_object_name = 'messages'
     template_name = 'Forum/forum.html'
     allow_empty = True
-    paginate_by = 5
+    paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ForumPage, self).get_context_data(**kwargs)
+        context = super(ForumView, self).get_context_data(**kwargs)
         try:
             context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
         except:
             return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
-        if context['forum'].is_pablished == False and self.request.user != context['forum'].creator:
+        if context['forum'].is_published == False and self.request.user != context['forum'].creator:
             raise Http404('Форум не найден')
         context['title'] = f"Форум :: {context['forum']}"
         self.pages = context['page_obj']
@@ -120,7 +138,7 @@ class ForumPage(MyListView):
         return (Message.objects.filter(id_forum=self.kwargs['forum_id']))
 
     def get(self, request, *args, **kwargs):
-        context = super(MyListView, self).get(request, *args, **kwargs)
+        context = super(ForumView, self).get(request, *args, **kwargs)
         try:
             delete = request.GET['delete']
         except:
@@ -135,47 +153,36 @@ class ForumPage(MyListView):
                 raise Http404('Ошибка атентификации')
 
 
-class RegPage(CreateView):
-    """
-    show page with form of registration user
-    """
+class RegistrationView(CreateView):
     template_name = 'Forum/registration.html'
-    form_class = RegForm
+    form_class = RegistrationForm
     title = 'Регистрация пользователя'
     success_url = reverse_lazy('index')
 
     def post(self, request, *args, **kwargs):
-        """
-        add default group = 3 (user)
-        """
-        form = RegForm(request.POST, request.FILES)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             note = form.save(commit=True)
             note.groups.set([3])
             note.save()
         else:
-            return super(RegPage, self).post(request, args, kwargs)
+            return super(RegistrationView, self).post(request, args, kwargs)
         return redirect('index')
 
 
-class AddMessage(MyAuthorization, TemplateView):
-    """
-    show page with form of add message
-    """
+class AddMessageView(CreateView):
     template_name = 'Forum/add_message.html'
-    title = ''
-    userform = UserLoginForm
+    title = 'Добавить сообщение'
+    form_class = AddMessageForm
     success_url = reverse_lazy('index')
 
     def get_context_data(self, **kwargs):
-        context = super(AddMessage, self).get_context_data(**kwargs)
-        context['userform'] = self.userform
-        context['form'] = AddMessageForm
+        context = super(AddMessageView, self).get_context_data(**kwargs)
+        context['userform'] = UserLoginForm
         try:
             context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
         except:
             return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
-        context['title'] = context['forum'].name
         return context
 
     def get(self, request, *args, **kwargs):
@@ -183,10 +190,9 @@ class AddMessage(MyAuthorization, TemplateView):
         if request.user.pk == None:
             return redirect('index')
         else:
-            return super(AddMessage, self).get(request, *args, **kwargs)
+            return super(AddMessageView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
         forum = Forum.objects.get(pk=self.kwargs['forum_id'])
         user = request.user
         form = AddMessageForm(request.POST)
@@ -196,13 +202,11 @@ class AddMessage(MyAuthorization, TemplateView):
             note.id_forum = forum
             note.save()
             return redirect(f"../{kwargs['forum_id']}")
-        return Http404
+        else:
+            return super(AddMessageView, self).post(request, *args, **kwargs)
 
 
-class EditMessage(UpdateView):
-    """
-    show page with form to edit forum
-    """
+class EditMessageView(UpdateView):
     template_name = 'Forum/add_message.html'
     form_class = AddMessageForm
     queryset = Message.objects
@@ -211,137 +215,63 @@ class EditMessage(UpdateView):
         return reverse_lazy('forum', kwargs={'forum_id': self.kwargs['forum_id']})
 
     def get_context_data(self, **kwargs):
-        context = super(EditMessage, self).get_context_data(**kwargs)
-        context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
+        context = super(EditMessageView, self).get_context_data(**kwargs)
+        context['forum'] = get_object_or_404(Forum, pk=self.kwargs['forum_id'])
         context['title'] = "Редактирование сообщения"
         return context
 
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
-        message = Message.objects.get(pk=self.kwargs['pk'])
+        message = get_object_or_404(Message, pk=self.kwargs['pk'])
+        forum = get_object_or_404(Forum, pk=self.kwargs['forum_id'])
+        print(forum)
         user = request.user
-        if message.id_user == user:
-            return super(EditMessage, self).get(request, *args, **kwargs)
-        raise Http404('Ошибка атентификации')
-
-    # def post(self, request, *args, **kwargs):
-    #     message = Message.objects.get(pk=self.kwargs['pk'])
-    #     user = request.user
-    #     if message.id_user == user:
-    #         return super(EditMessage, self).post(request, *args, **kwargs)
-    #     raise Http404('Ошибка атентификации')
+        if message.id_forum == forum:
+            if message.id_user == user:
+                return super(EditMessageView, self).get(request, *args, **kwargs)
+            raise Http404('Ошибка атентификации')
+        raise Http404('Страница не найдена')
 
 
-# class EditMessage(MyAuthorization, TemplateView):
-#     template_name = 'Forum/add_message.html'
-#     title = ''
-#     userform = UserLoginForm
-#     success_url = reverse_lazy('index')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(EditMessage, self).get_context_data(**kwargs)
-#         context['userform'] = self.userform
-#         try:
-#             context['forum'] = Forum.objects.get(pk=self.kwargs['forum_id'])
-#         except:
-#             return get_object_or_404(Forum, pk=self.kwargs['forum_id'])
-#         context['title'] = context['forum'].name
-#         return context
-#
-#     def get(self, request, *args, **kwargs):
-#         context = self.get_context_data()
-#         try:
-#             edit = request.GET['edit']
-#         except:
-#             return redirect('index')
-#         if edit != None:
-#             user = request.user
-#             message = Message.objects.get(pk=edit)
-#             if message.id_user == user:
-#                 context['form'] = AddMessageForm(instance=message)
-#                 return self.render_to_response(context)
-#             else:
-#                 raise Http404('Ошибка атентификации')
-#
-#     def post(self, request, *args, **kwargs):
-#         context = self.get_context_data(**kwargs)
-#         forum = Forum.objects.get(pk=self.kwargs['forum_id'])
-#         user = request.user
-#         try:
-#             edit = request.GET['edit']
-#         except:
-#             return redirect('index')
-#         message = Message.objects.get(pk=edit)
-#         user = request.user
-#         if message.id_user == user:
-#             form = AddMessageForm(request.POST, instance=message)
-#             if form.is_valid():
-#                 message = form.save()
-#                 return HttpResponseRedirect(f"/forum/{self.kwargs['forum_id']}")
-#             else:
-#                 form = AddMessageForm(instance=message)
-#                 return HttpResponseRedirect(f"/forum/{self.kwargs['forum_id']}")
-#         raise Http404('Ошибка атентификации')
-
-
-class CreateForum(CreateView):
-    """
-    show page with form to create forum
-    """
+class CreateForumView(CreateView):
     template_name = 'Forum/create_forum.html'
     title = 'Создать форум'
     form_class = CreateForumForm
     userform = UserLoginForm
-    success_url = reverse_lazy('index')
 
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
         else:
-            return super(CreateForum, self).get(request, *args, **kwargs)
+            return super(CreateForumView, self).get(request, *args, **kwargs)
 
 
-class AddCategory(MyAuthorization, TemplateView):
-    """
-    show page with form to add category
-    """
+class AddCategoryView(CreateView):
     template_name = 'Forum/add_category.html'
-    title = 'Добавить категорию'
-    userform = UserLoginForm
-    success_url = reverse_lazy('index')
+    form_class = AddCategoryForm
+    success_url = reverse_lazy('add_forum')
 
     def get_context_data(self, **kwargs):
-        context = super(AddCategory, self).get_context_data(**kwargs)
-        context['userform'] = self.userform
-        context['title'] = self.title
-        context['form'] = AddCategoryForm
+        context = super(AddCategoryView, self).get_context_data(**kwargs)
+        context['userform'] = UserLoginForm
+        context['title'] = 'Добавить категорию'
         return context
 
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
         else:
-            return super(AddCategory, self).get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        form = AddCategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('index')
-        raise Http404('Ошибка атентификации')
+            return super(AddCategoryView, self).get(request, *args, **kwargs)
 
 
-class UserPage(MyAuthorization, TemplateView):
+class UserView(TemplateView):
     template_name = 'Forum/user.html'
-    title = 'Пользователь'
     userform = UserLoginForm
-    success_url = reverse_lazy('users')
 
     def get_context_data(self, *args, **kwargs):
-        context = super(UserPage, self).get_context_data(**kwargs)
-        context['userform'] = self.userform
+        context = super(UserView, self).get_context_data(**kwargs)
+        context['userform'] = UserLoginForm
         try:
             context['user'] = Users.objects.get(username=self.kwargs['username'])
         except:
@@ -352,7 +282,7 @@ class UserPage(MyAuthorization, TemplateView):
         return context
 
 
-class MyForums(MyListView):
+class MyForumsView(MyListView):
     model = Forum
     template_name = 'Forum/myforums.html'
     context_object_name = 'forums'
@@ -360,7 +290,7 @@ class MyForums(MyListView):
     paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(__class__, self).get_context_data()
+        context = super(MyForumsView, self).get_context_data()
         context['category'] = 'Мои форумы'
         context['title'] = "Мои форумы"
         self.pages = context['page_obj']
@@ -370,7 +300,7 @@ class MyForums(MyListView):
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
-        return super(MyForums, self).get(request, *args, **kwargs)
+        return super(MyForumsView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
         try:
@@ -379,27 +309,39 @@ class MyForums(MyListView):
             raise Http404("Ошибка авторизации")
 
 
-class EditForum(UpdateView):
-    """
-    show page with form to edit forum
-    """
+class EditForumView(UpdateView):
     template_name = 'Forum/create_forum.html'
     form_class = CreateForumForm
     queryset = Forum.objects
     success_url = reverse_lazy('myforums')
 
     def get_context_data(self, **kwargs):
-        context = super(EditForum, self).get_context_data(**kwargs)
+        context = super(EditForumView, self).get_context_data(**kwargs)
         context['title'] = "Редактирование форума"
         return context
 
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
-        if request.user.pk == None:
-            return redirect('index')
         forum = Forum.objects.get(pk=self.kwargs['pk'])
         user = request.user
         if forum.creator == user:
-            return super(EditForum, self).get(request, *args, **kwargs)
+            return super(EditForumView, self).get(request, *args, **kwargs)
         raise Http404('Ошибка атентификации')
+
+class EditMyProfilView(UpdateView):
+    template_name = 'Forum/editmyprofil.html'
+    form_class = EditUserForm
+
+    def get_object(self):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super(EditMyProfilView, self).get_context_data(**kwargs)
+        context['title'] = "Редактирование профиля"
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.user.pk == None:
+            return redirect('index')
+        return super(EditMyProfilView, self).get(request, *args, **kwargs)

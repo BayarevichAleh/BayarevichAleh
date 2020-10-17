@@ -11,14 +11,9 @@
     <a href="#">Мои сообщения</a><br>
     <a href="#">Мои файлы</a><br>
     <a href="{% url 'add_forum' %}">Создать форум</a><br>
-    <form action="{% url 'logout' %}" method="post" autocomplete="off">
-        {% csrf_token %}
-        <input type="hidden" value='{{ request.path }}'
-               name='url'>
         <div style="float: right">
-            <button type="submit" class="btn btn-primary">Выйти</button>
+            <a href="{% url 'logout' %}?url={{ request.path }}" class="btn btn-primary">Выйти</a>
         </div>
-    </form>
 {% else %}
     <form method="post" autocomplete="off">
         {% csrf_token %}

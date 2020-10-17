@@ -26,7 +26,7 @@
                 <div class="row">
                     <div class="col-1-4" style="width: 70%">
                         Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a><br>
-                        Видимость: {% if item.is_pablished %}<font color="#228b22">Открыт</font>{% else %}
+                        Видимость: {% if item.is_published %}<font color="#228b22">Открыт</font>{% else %}
                         <font color="red">Закрыт{% endif %}</font><br>
                         {{ item.create_date }}
                     </div>

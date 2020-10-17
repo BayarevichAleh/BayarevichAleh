@@ -3,7 +3,7 @@
 
 {% block content %}
     {% for item in categories %}
-        <div class="{% cycle 'card text-white bg-primary mb-3' 'card text-white bg-secondary mb-3' 'card text-white bg-success mb-3' 'card text-white bg-danger mb-3' 'card text-white bg-warning mb-3' 'card text-white bg-info mb-3' 'card bg-light mb-3' 'card text-white bg-dark mb-3' %}"
+        <div class="{% cycle 'card text-white bg-primary mb-3' 'card text-white bg-secondary mb-3' 'card text-white bg-success mb-3' 'card text-white bg-danger mb-3' 'card text-white bg-warning mb-3' 'card text-white bg-info mb-3' 'card text-white bg-dark mb-3' %}"
              style="max-width: 100%;">
             <div class="card-header" style="height: 50px"><h5 class="card-title">
                 <a href="{{ item.get_absolute_url }}" style="color: white">{{ item }}</a>

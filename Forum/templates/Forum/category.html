@@ -11,29 +11,27 @@
         </h5>
     </div>
     {% for item in forums %}
-        {% if item.is_pablished %}
-            <div class="card text-center" style="margin: 15px auto">
-                <div class="card-header" align="left">
-                    <a href="{{ item.get_absolute_url }}"><h5>{{ item.name }}</h5></a>
-                </div>
-                <div class="card-body" align="left">
-                    <div class="col-1-4" style="width: 20%">
-                        {% if  item.logo %}
-                            <img src="../../static{{ item.logo.url }}" width="100%" alt="Логотип">
-                        {% else %}
-                            <img src="../../static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
-                        {% endif %}
-                    </div>
-                    <div class="col-3-4"><p class="card-text" align="justify">{{ item.commit }}</p></div>
-
-                </div>
-                <div class="card-footer text-muted" align="left">
-                    Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a><br>
-                    Автор: <a href="{{ item.creator.get_absolute_url }}">{{ item.creator }}</a><br>
-                    {{ item.create_date }}
-                </div>
+        <div class="card text-center" style="margin: 15px auto">
+            <div class="card-header" align="left">
+                <a href="{{ item.get_absolute_url }}"><h5>{{ item.name }}</h5></a>
             </div>
-        {% endif %}
+            <div class="card-body" align="left">
+                <div class="col-1-4" style="width: 20%">
+                    {% if  item.logo %}
+                        <img src="../../static{{ item.logo.url }}" width="100%" alt="Логотип">
+                    {% else %}
+                        <img src="../../static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
+                    {% endif %}
+                </div>
+                <div class="col-3-4"><p class="card-text" align="justify">{{ item.commit }}</p></div>
+
+            </div>
+            <div class="card-footer text-muted" align="left">
+                Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a><br>
+                Автор: <a href="{{ item.creator.get_absolute_url }}">{{ item.creator }}</a><br>
+                {{ item.create_date }}
+            </div>
+        </div>
     {% endfor %}
 {% endblock %}
 
