@@ -236,15 +236,30 @@ class EditMessageView(UpdateView):
 
 class CreateForumView(CreateView):
     template_name = 'Forum/create_forum.html'
-    title = 'Создать форум'
     form_class = CreateForumForm
     userform = UserLoginForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateForumView, self).get_context_data(**kwargs)
+        context['title'] = 'Создать форум'
+        return context
 
     def get(self, request, *args, **kwargs):
         if request.user.pk == None:
             return redirect('index')
         else:
             return super(CreateForumView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        form = CreateForumForm(request.POST,request.FILES)
+        if form.is_valid():
+            note = form.save(commit=True)
+            note.creator = user
+            note.save()
+            return self.form_valid(form)
+        else:
+            return super(CreateForumView, self).post(request, *args, **kwargs)
 
 
 class AddCategoryView(CreateView):

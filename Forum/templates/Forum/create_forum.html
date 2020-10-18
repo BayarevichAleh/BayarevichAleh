@@ -7,6 +7,7 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
+                {{ form.media }}
                 <div class="form-group">
                     <div class="row" style="width: 800px">
                         <div class="col-1-4" style="width: 160px">
@@ -34,7 +35,7 @@
                     <div class="row" style="width: 800px">
                         <div class="col-1-4" style="width: 160px">
                             <label for="{{ form.commit.id_for_label }}">{{ form.commit.label }}:</label></div>
-                        <div class="col-1-4" style="width: 350px">{{ form.commit }}</div>
+                        <div class="col-1-4" style="width: 550px">{{ form.commit }}</div>
                         <div style="color: red">
                             {{ form.commit.errors }}
                         </div>

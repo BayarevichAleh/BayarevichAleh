@@ -13,6 +13,7 @@ class AddMessageForm(forms.ModelForm):
 
 
 class CreateForumForm(forms.ModelForm):
+    commit = forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control', 'rows': 7, 'cols': 100}))
     class Meta:
         model = Forum
         fields = ['category', 'name', 'commit', 'logo', 'is_published']

@@ -5,11 +5,12 @@ from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 
 STATUS_CHOICES = (
-        ('active', 'Активен'),
-        ('warn', 'Вынесено предупреждение'),
-        ('block', 'Заблокирован'),
-        ('delate', 'Удален'),
-    )
+    ('active', 'Активен'),
+    ('warn', 'Вынесено предупреждение'),
+    ('block', 'Заблокирован'),
+    ('delate', 'Удален'),
+)
+
 
 class Users(AbstractUser):
     age = models.DateField(blank=True, null=True, verbose_name='Дата Рождения', )
@@ -30,7 +31,6 @@ class Users(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ['username']
-
 
 
 class Category(models.Model):
@@ -57,7 +57,7 @@ class Forum(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')
     name = models.CharField(max_length=100, unique=True, verbose_name='Название')
-    commit = models.TextField(verbose_name='Описание')
+    commit = RichTextField(blank=False, verbose_name='Описание')
     logo = models.ImageField(blank=True, upload_to='forumlogos/', verbose_name='Логотип')
     creator = models.ForeignKey('Users', on_delete=models.PROTECT, null=True, verbose_name='Создатель')
     is_published = models.BooleanField(default=True,
@@ -85,7 +85,7 @@ class Message(models.Model):
                                  verbose_name='Форум')
     id_user = models.ForeignKey('Users', on_delete=models.PROTECT, null=True,
                                 verbose_name='Пользователь')
-    text = RichTextField()
+    text = RichTextField(blank=False, verbose_name='Сообщение')
     create_date = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
