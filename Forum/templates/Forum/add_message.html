@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+
 {% block title %}{{ forum.name }}{% endblock %}
 {% block content %}
     <div class="card text-center" style="margin: 15px auto">
@@ -25,7 +26,8 @@
     <div class="row" style="margin: 15px auto">
         <form id="message" method="post" autocomplete="off">
             {% csrf_token %}
-            <div>{{ form.text }}</div>
+            {{ form.media }}
+            <div>{% autoescape off %}{{ form.text }}{% endautoescape %}</div>
             <div style="float: right">
                 <button type="submit" class="btn btn-primary">Отправить</button>
             </div>

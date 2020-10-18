@@ -13,7 +13,6 @@ class UsersAdmin(admin.ModelAdmin):
     list_filter = ('status',)
 
 
-
 class ForumAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'creator', 'create_date')
     list_display_links = ['name']
@@ -26,11 +25,13 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ['title']
 
+
 class MessageFormAdmin(forms.ModelForm):
     text = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Message
         fields = '__all__'
+
 
 class MessageAdmin(admin.ModelAdmin):
     form = MessageFormAdmin

@@ -6,12 +6,10 @@ from .models import *
 
 
 class AddMessageForm(forms.ModelForm):
+    text = forms.CharField(widget=CKEditorWidget(attrs={'class': 'form-control', 'rows': 7, 'cols': 100}))
     class Meta:
         model = Message
         fields = ['text']
-        widgets = {
-            'text': CKEditorWidget(attrs={'class': 'form-control', 'rows': 7, 'cols': 100}),
-        }
 
 
 class CreateForumForm(forms.ModelForm):

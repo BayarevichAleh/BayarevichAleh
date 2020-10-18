@@ -1,17 +1,20 @@
 from django.urls import reverse
 from django.contrib.auth.models import *
 
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
-class Users(AbstractUser):
-    status_choices = (
+STATUS_CHOICES = (
         ('active', 'Активен'),
         ('warn', 'Вынесено предупреждение'),
         ('block', 'Заблокирован'),
         ('delate', 'Удален'),
     )
+
+class Users(AbstractUser):
     age = models.DateField(blank=True, null=True, verbose_name='Дата Рождения', )
     photo = models.ImageField(blank=True, upload_to='userphotos/', verbose_name='Фото')
-    status = models.CharField(max_length=150, choices=status_choices, default='active', verbose_name='Статус')
+    status = models.CharField(max_length=150, choices=STATUS_CHOICES, default='active', verbose_name='Статус')
 
     def get_absolute_url(self):
         """
@@ -82,7 +85,7 @@ class Message(models.Model):
                                  verbose_name='Форум')
     id_user = models.ForeignKey('Users', on_delete=models.PROTECT, null=True,
                                 verbose_name='Пользователь')
-    text = models.TextField()
+    text = RichTextField()
     create_date = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):

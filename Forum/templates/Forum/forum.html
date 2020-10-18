@@ -43,7 +43,7 @@
             <div class="col-3-4" style="width: 83%;margin-right: -2%">
                 <div class="card text-center">
                     <div class="card-body" align="left">
-                        {{ item.text }}
+                        {% autoescape off %}{{ item.text }}{% endautoescape %}
                     </div>
                     <div class="card-footer text-muted" align="left">
                         <div class="col" style="width: 50%; float: left; margin-left: -15px">
