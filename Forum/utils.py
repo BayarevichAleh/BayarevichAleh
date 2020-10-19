@@ -1,11 +1,3 @@
-from django.contrib.auth import login
-from django.views.generic import ListView
-from django.http import Http404
-
-
-from .forms import *
-
-
 class MyPaginator(object):
 
     pages = object
