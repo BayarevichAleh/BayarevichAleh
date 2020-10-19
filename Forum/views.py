@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.utils.translation import gettext as _
 
 from .utils import *
+from .forms import *
 
 
 class MyListView(ListView, MyPaginator):
@@ -76,7 +77,7 @@ class CategoriesView(MyListView):
     template_name = 'Forum/categories.html'
     context_object_name = 'categories'
     allow_empty = True
-    paginate_by = 10
+    paginate_by = 5
 
 
 class CategoryView(MyListView):
