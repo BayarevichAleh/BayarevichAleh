@@ -84,13 +84,15 @@ WSGI_APPLICATION = 'Bayarevich.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': "django.db.backends.postgresql",
         # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'Forumdb',
-        # 'USER': 'BayarevichAleh',
-        # 'PASSWORD':'FlashMX2004',
-        # 'HOST':'localhost'
+        'NAME': 'forum_db',
+        'USER': 'forum_admin',
+        'PASSWORD': 'FlashMX2004',
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 
@@ -149,13 +151,13 @@ CKEDITOR_CONFIGS = {
              '-', 'Image',
              '-', 'Source',
              '-', 'NumberedList', 'BulletedList'
-            ],
+             ],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
              '-', 'Font', 'FontSize', 'TextColor',
              '-', 'Outdent', 'Indent',
              '-', 'HorizontalRule',
              '-', 'Blockquote'
-            ]
+             ]
         ],
         'height': 300,
         'width': '100%',
@@ -168,3 +170,10 @@ CKEDITOR_CONFIGS = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+    }
+}

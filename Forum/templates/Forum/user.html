@@ -34,6 +34,7 @@
                 <br>
                 {% if request.user.username == user.username %}
                     <a class="btn btn-primary" href="{% url 'edit_my_profil' %}">Редактировать</a>
+                    <a class="btn btn-primary" href="{% url 'change_password' %}">Сменить пароль</a>
                 {% endif %}
             </div>
 

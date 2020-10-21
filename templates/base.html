@@ -1,5 +1,6 @@
 <!doctype html>
 {% load static %}
+{% load cache %}
 <html lang="en">
 <head>
     <!-- Required meta tags -->
@@ -14,7 +15,9 @@
     <title>{% block title %}{{ title }}{% endblock %}</title>
 </head>
 <body>
-{% include 'inc/_nav.html' %}
+{% cache 60 sidebar %}
+    {% include 'inc/_nav.html' %}
+{% endcache %}
 <div class="main">
     <br>
     <div class="container">

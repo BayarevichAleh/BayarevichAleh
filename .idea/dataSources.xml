@@ -15,5 +15,12 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="forum_db@localhost" uuid="b0ef1b0e-f05c-4a99-8343-1336bb912d7f">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/forum_db</jdbc-url>
+      <time-zone>Europe/Minsk</time-zone>
+    </data-source>
   </component>
 </project>

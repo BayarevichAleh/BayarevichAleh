@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth.views import PasswordChangeView
 from django.utils.translation import gettext as _
 
 from .utils import *
@@ -253,7 +254,7 @@ class CreateForumView(CreateView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        form = CreateForumForm(request.POST,request.FILES)
+        form = CreateForumForm(request.POST, request.FILES)
         if form.is_valid():
             note = form.save(commit=True)
             note.creator = user
@@ -345,6 +346,7 @@ class EditForumView(UpdateView):
             return super(EditForumView, self).get(request, *args, **kwargs)
         raise Http404('Ошибка атентификации')
 
+
 class EditMyProfilView(UpdateView):
     template_name = 'Forum/editmyprofil.html'
     form_class = EditUserForm
@@ -361,3 +363,9 @@ class EditMyProfilView(UpdateView):
         if request.user.pk == None:
             return redirect('index')
         return super(EditMyProfilView, self).get(request, *args, **kwargs)
+
+
+class UserPasswordChangeView(PasswordChangeView):
+    template_name = 'Forum/change_password.html'
+    form_class = UserPasswordChangeForm
+    success_url = reverse_lazy('index')

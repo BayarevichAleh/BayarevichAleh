@@ -15,7 +15,7 @@
                     <img src="/static/media/forumlogos/nologo.png" width="100%" alt="Логотип">
                 {% endif %}
             </div>
-            <div class="col-3-4"><p class="card-text" align="justify">{{ forum.commit }}</p></div>
+            <div class="col-3-4"><p class="card-text" align="justify">{% autoescape off %}{{ forum.commit }}{% endautoescape %}</p></div>
         </div>
         <div class="card-footer text-muted" align="left">
             <div class="col" style="width: 70%; float: left; margin-left: -15px">

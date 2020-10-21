@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from .views import *
 
@@ -17,5 +18,6 @@ urlpatterns = [
     path('forum/<int:forum_id>/edit_message/<int:pk>', EditMessageView.as_view(), name='edit_message'),
     path('myforums/', MyForumsView.as_view(), name='myforums'),
     path('forum/<int:pk>/edit_forum/', EditForumView.as_view(), name='edit_forum'),
-    path('editmyprofil/', EditMyProfilView.as_view(), name='edit_my_profil')
+    path('editmyprofil/', EditMyProfilView.as_view(), name='edit_my_profil'),
+    path('changepassword/',UserPasswordChangeView.as_view(),name='change_password')
 ]

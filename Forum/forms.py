@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 
@@ -82,4 +82,14 @@ class AddCategoryForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'commit': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    class Meta:
+        model = Users
+        fields = ['old_password','new_password1','new_password2']
+        widgets = {
+            'old_password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'new_password1': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'new_password2': forms.PasswordInput(attrs={'class': 'form-control'}),
         }
