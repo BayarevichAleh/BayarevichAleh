@@ -369,3 +369,4 @@ class UserPasswordChangeView(PasswordChangeView):
     template_name = 'Forum/change_password.html'
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('index')
+
