@@ -32,6 +32,7 @@ class RegistrationForm(UserCreationForm):
     password2 = forms.CharField(label='Повтор пароля', max_length=100,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
+
     class Meta:
         model = Users
         fields = ['username', 'email', 'first_name', 'last_name', 'age', 'photo']

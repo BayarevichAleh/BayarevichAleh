@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.views import PasswordChangeView
 from django.utils.translation import gettext as _
+from django.core.mail import send_mail
 
 from .utils import *
 from .forms import *
@@ -167,6 +168,12 @@ class RegistrationView(CreateView):
             note = form.save(commit=True)
             note.groups.set([3])
             note.save()
+            subject = "Регистрация на сайте - Мой первй форум"
+            email_text = "Уважаемый пользователь! Вы зарегистрированы на сайте 'Мой первый форум', если вы этого не далали, просим связаться с администраторами сайта"
+            try:
+                send_mail(subject=subject, message=email_text, from_email='BayarevichForum@yandex.ru', recipient_list=[form.cleaned_data['email']], fail_silently=False)
+            except:
+                pass
         else:
             return super(RegistrationView, self).post(request, args, kwargs)
         return redirect('index')
@@ -369,4 +376,3 @@ class UserPasswordChangeView(PasswordChangeView):
     template_name = 'Forum/change_password.html'
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('index')
-

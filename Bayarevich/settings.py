@@ -177,3 +177,10 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'BayarevichForum@yandex.ru'
+EMAIL_HOST_PASSWORD = 'sjhuueuodbzfamts'
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
