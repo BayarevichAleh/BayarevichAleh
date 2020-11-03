@@ -1,11 +1,10 @@
 appdirs==1.4.3
 apturl==0.5.2
-asgiref==3.2.10
-bcrypt==3.2.0
+asgiref==3.3.0
+bcrypt==3.1.7
 blinker==1.4
 Brlapi==0.7.0
 certifi==2019.11.28
-cffi==1.14.3
 chardet==3.0.4
 Click==7.0
 colorama==0.4.3
@@ -17,7 +16,7 @@ defer==1.0.6
 distlib==0.3.0
 distro==1.4.0
 distro-info===0.23ubuntu1
-Django==3.1
+Django==3.1.3
 django-bootstrap-datepicker-plus==3.0.5
 django-ckeditor==6.0.0
 django-debug-toolbar==3.1.1
@@ -47,11 +46,10 @@ oauthlib==3.1.0
 olefile==0.46
 paramiko==2.6.0
 pexpect==4.6.0
-Pillow==7.2.0
+Pillow==7.0.0
 protobuf==3.6.1
 psycopg2-binary==2.8.6
 pycairo==1.16.2
-pycparser==2.20
 pycups==1.9.73
 PyGObject==3.36.0
 PyJWT==1.7.1
@@ -61,7 +59,7 @@ pyRFC3339==1.1
 python-apt==2.0.0+ubuntu0.20.4.1
 python-dateutil==2.7.3
 python-debian===0.1.36ubuntu1
-pytz==2020.1
+pytz==2019.3
 pyxdg==0.26
 PyYAML==5.3.1
 reportlab==3.5.34
@@ -69,8 +67,8 @@ requests==2.22.0
 requests-unixsocket==0.2.0
 SecretStorage==2.3.1
 simplejson==3.16.0
-six==1.15.0
-sqlparse==0.3.1
+six==1.14.0
+sqlparse==0.4.1
 systemd-python==234
 ubuntu-advantage-tools==20.3
 ubuntu-drivers-common==0.0.0
