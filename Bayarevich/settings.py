@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'm@+j*gv^3q-aw19q=xdc_g@*nnt=24p618qssy07!7kty+-rd)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 AUTH_USER_MODEL = "Forum.Users"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost:8000','localhost','35.189.113.204','0.0.0.0','127.0.0.1','0.0.0.0:8000','35.189.113.204:8000']
 
 # Application definition
 
@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': "django.db.backends.postgresql",
+        'ENGINE': "django.db.backends.postgresql_psycopg2",
         # 'ENGINE': 'django.db.backends.mysql',
         'NAME': 'forum_db',
         'USER': 'forum_admin',
