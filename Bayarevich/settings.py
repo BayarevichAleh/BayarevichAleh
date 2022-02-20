@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'm@+j*gv^3q-aw19q=xdc_g@*nnt=24p618qssy07!7kty+-rd)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 AUTH_USER_MODEL = "Forum.Users"
 
 ALLOWED_HOSTS = ['localhost:8000','localhost','35.189.113.204','0.0.0.0','127.0.0.1','0.0.0.0:8000','35.189.113.204:8000']
